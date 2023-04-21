@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.lhstack.TemplateApplicationTests
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.48 s - in com.lhstack.TemplateApplicationTests
