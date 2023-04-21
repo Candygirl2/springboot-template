@@ -164,8 +164,18 @@
             this.output = this.$refs.output
             this.input = this.$refs.input
             this.operate = this.$refs.operate
+            if(window.innerWidth < 1300){
+                    this.output.style.width = (this.operate.scrollWidth - 10) + "px"
+                    this.input.style.width = (this.operate.scrollWidth - 14.5) + "px"
+            }
             addEventListener("resize",() => {
-                console.log(window.innerWidth,this.operate.width)
+                if(window.innerWidth < 1300){
+                    this.output.style.width = (this.operate.scrollWidth - 10) + "px"
+                    this.input.style.width = (this.operate.scrollWidth - 14.5) + "px"
+                }else {
+                    this.output.style.width = "99.9%"
+                    this.input.style.width = "99.7%"
+                }
             })
         },
         methods: {
