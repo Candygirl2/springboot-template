@@ -64,7 +64,7 @@
     </div>
     <textarea ref="input" id="input" v-model="encryptText"></textarea>
 
-    <div style="width: 100%;display: flex;justify-content: space-between">
+    <div ref="operate" style="width: 100%;display: flex;justify-content: space-between">
         <div style="height: 35px;display: flex;flex-direction: column;justify-content: center;">
             <label style="color: darkgoldenrod;display: block;width: 100px">
                 解密结果
@@ -117,6 +117,7 @@
                 encryptText: "9GVtgT5fzydU1O595W+0fIPRew4IFoRUUijxalwx/pHe8ONGN2qvIIwah9bC0oj7QrcdrGfxO9klqwlc7ntUOantY5vb65DJDolUmX/RyU4A5T9DRD5I3tqn2pmaK3EjsSsba+FScfeLq5HTGM258OW2X0ryyPp7iw2s/anGlzw=",
                 theme: "default",
                 output: "",
+                operate: "",
                 isJson: false,
                 input: "",
                 options: [
@@ -160,8 +161,12 @@
             }
         },
         mounted(){
-            this.output = this.$refs.output;
+            this.output = this.$refs.output
             this.input = this.$refs.input
+            this.operate = this.$refs.operate
+            addEventListener("resize",() => {
+                console.log(window.innerWidth,this.operate.width)
+            })
         },
         methods: {
             clean() {
