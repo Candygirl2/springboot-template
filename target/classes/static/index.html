@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Decrypt</title>
+    <link rel="stylesheet" href="./css/element-ui.css">
+    <script src="./js/vue.js"></script>
+    <script src="./js/vue-json-view.js"></script>
+    <script src="./js/element-ui.js"></script>
+    <style>
+        #input {
+            width: 99.7%;
+            height: 300px;
+            border: 1px solid gray;
+            overflow-y: auto;
+            resize: none;
+        }
+
+        .d-btn {
+            width: 100px;
+            height: 35px;
+            margin-bottom: 5px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .d-btn-group {
+            display: flex;
+            justify-content: space-around;
+            width: 1200px;
+            float: right;
+        }
+
+        #output {
+            width: 99.9%;
+            height: 350px;
+            border: 1px solid gray;
+            overflow-y: auto;
+            resize: none;
+            color: #8c6325
+        }
+
+        .d-input {
+            width: 200px;
+            height: 20px;
+        }
+
+        .d-input-group {
+            width: 300px;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <div style="display: flex;justify-content: space-between">
+        <label for="input" style="color: darkgoldenrod;margin-bottom: 10px;display: block">
+            请输入需要解密的内容
+        </label>
+    </div>
+    <textarea ref="input" id="input" v-model="encryptText"></textarea>
+
+    <div style="width: 100%;display: flex;justify-content: space-between">
+        <div style="height: 35px;display: flex;flex-direction: column;justify-content: center;">
+            <label style="color: darkgoldenrod;display: block;width: 100px">
+                解密结果
+            </label>
+        </div>
+        <div class="d-btn-group">
+            <div style="display: flex;justify-content: space-around;width: 550px">
+                <div class="d-input-group">
+                    <label for="aesKey" style="margin-right: 5px">AesKey:</label>
+                    <input id="aesKey" v-model="aesKey" type="text" class="el-input d-input">
+                </div>
+
+                <div class="d-input-group" style="margin-right: 10px">
+                    <label for="aesIv" style="margin-right: 5px">AesIv:</label>
+                    <input id="aesIv" v-model="aesIv" type="text" class="el-input d-input">
+                </div>
+            </div>
+            <div class="d-btn" style="margin-right: 10px;">
+                <el-select v-model="theme" size="small" placeholder="请选择">
+                    <el-option
+                            v-for="item in options"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value">
+                    </el-option>
+                </el-select>
+            </div>
+            <button class="el-button el-button--info d-btn" id="copy" @click="duplication">复制内容</button>
+            <button class="el-button el-button--info d-btn" @click="closed=true" id="collapse">收起</button>
+            <button class="el-button el-button--info d-btn" @click="closed=false" id="expansion">展开</button>
+            <button class="el-button el-button--warning d-btn" @click="clean" id="clean">清空内容</button>
+            <button class="el-button el-button--primary d-btn" id="decrypt" @click="decrypt">解密</button>
+        </div>
+    </div>
+    <div id="output" ref="output">
+        <json-viewer v-show="isJson" :closed="closed" :theme="theme" :deep="5" :data="jsonData"></json-viewer>
+        <span v-show="!isJson" v-text="jsonData.data"></span>
+    </div>
+</div>
+</body>
+<script>
+    let app = new Vue({
+        el: "#app",
+        data() {
+            return {
+                jsonData: {},
+                closed: false,
+                aesKey: "",
+                aesIv: "",
+                encryptText: "",
+                theme: "default",
+                output: "",
+                isJson: false,
+                input: "",
+                options: [
+                    {
+                        label:"default",
+                        value:""
+                    },{
+                        label: "vs-code",
+                        value: "vs-code"
+                    },{
+                        label: "one-dark",
+                        value: "one-dark"
+                    }
+                ]
+            }
+        },
+        watch:{
+            "theme": (newV,old) => {
+                if(!newV){
+                    this.output.style.background = "#fff"
+                    this.input.style.background = "#fff"
+                    if(!this.isJson){
+                        this.output.style.color = "#8c6325"
+                        this.input.style.color = "#8c6325"
+                    }
+                }else if(newV === "vs-code"){
+                    this.output.style.background = "#1e1e1e"
+                    this.input.style.background = "#1e1e1e"
+                    if(!this.isJson){
+                        this.output.style.color = "#a9dbfb"
+                        this.input.style.color = "#a9dbfb"
+                    }
+                }else if(newV === "one-dark"){
+                    this.output.style.background = "#292c33"
+                    this.input.style.background = "#292c33"
+                    if(!this.isJson){
+                        this.output.style.color = "#d27277"
+                        this.input.style.color = "#d27277"
+                    }
+                }
+            }
+        },
+        mounted(){
+            this.output = this.$refs.output;
+            this.input = this.$refs.input
+        },
+        methods: {
+            clean() {
+                this.jsonData = {}
+                this.encryptText = ""
+                this.isJson = false
+            },
+            duplication() {
+                if (this.jsonData && Object.keys(this.jsonData).length > 0) {
+                    let input = document.createElement("textarea");
+                    input.value = !this.isJson ? this.jsonData.data : JSON.stringify(this.jsonData,null,2)
+                    document.body.appendChild(input);
+                    input.select();
+                    document.execCommand("copy");
+                    document.body.removeChild(input);
+                    this.$message({
+                        message:"复制成功",
+                        type:"success"
+                    })
+                }
+            },
+            async decrypt() {
+                if (this.encryptText && this.encryptText.trim()) {
+                    let data = {
+                        "content": this.encryptText
+                    }
+                    console.log(this.aesKey)
+                    if (this.aesKey && this.aesKey.trim()) {
+                        data.key = this.aesKey
+                    }
+                    if (this.aesIv && this.aesIv.trim()) {
+                        data.iv = this.aesIv
+                    }
+                    let resp = await fetch("/crypto/decrypt", {
+                        method: "POST",
+                        body: JSON.stringify(data),
+                        headers: {
+                            "Content-Type": "application/json"
+                        }
+                    })
+                    let text = await resp.text()
+                    try{
+                        this.jsonData = JSON.parse(text)
+                        this.isJson = true
+                    }catch (e){
+                        this.isJson = false
+                        this.jsonData = {
+                            data: text
+                        }
+                    }
+                } else {
+                    this.$message({
+                        message:"请输入需要解密的内容",
+                        type: "warning"
+                    })
+                }
+            }
+        },
+        components: {
+            "json-viewer": window['vue-json-view'].default
+        }
+    })
+</script>
+</html>
