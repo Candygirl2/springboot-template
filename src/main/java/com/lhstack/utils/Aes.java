@@ -24,7 +24,7 @@ public class Aes {
         }
     }
     
-    public static Optional<byte[]> decrypt(String key,String iv,byte[] encryptBytes){
+    public static byte[] decrypt(String key,String iv,byte[] encryptBytes){
         try{
             Cipher cipher = StringUtils.hasText(iv) ? Cipher.getInstance(CBC) : Cipher.getInstance(ECB);
             if(StringUtils.hasText(iv)){
@@ -32,8 +32,7 @@ public class Aes {
             }else {
                 cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(key.getBytes(), "AES"));
             }
-            byte[] bytes = cipher.doFinal(encryptBytes);
-            return Optional.of(bytes);
+            return cipher.doFinal(encryptBytes);
         }catch(Exception e){
             throw new RuntimeException(e);
         }
