@@ -1,1 +1,1 @@
-run = "java Main.java"
+run = "mvn -Dmaven.test.skip=true clean package"
