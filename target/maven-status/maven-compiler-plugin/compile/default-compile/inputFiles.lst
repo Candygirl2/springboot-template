@@ -1,4 +1,4 @@
-/root/Java/src/main/java/com/lhstack/controller/CryptoController.java
-/root/Java/src/main/java/com/lhstack/TemplateApplication.java
-/root/Java/src/main/java/com/lhstack/utils/Aes.java
-/root/Java/src/main/java/com/lhstack/config/WebMvcConfiguration.java
+/root/springboot-template/src/main/java/com/lhstack/controller/CryptoController.java
+/root/springboot-template/src/main/java/com/lhstack/utils/Aes.java
+/root/springboot-template/src/main/java/com/lhstack/config/WebMvcConfiguration.java
+/root/springboot-template/src/main/java/com/lhstack/TemplateApplication.java
