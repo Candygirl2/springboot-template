@@ -1,1 +1,0 @@
-run = "mvn -Dmaven.test.skip=true spring-boot:run"
